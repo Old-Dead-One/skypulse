@@ -38,7 +38,6 @@ You are going to be building a basic weather application that uses the weather.g
 
 Your layout will look like this, though obviously with different content:
 
-![[example.png]]
 
 ## Submission
 
