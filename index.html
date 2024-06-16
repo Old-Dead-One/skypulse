@@ -121,6 +121,7 @@
                 </div>
                 <div class="card-body text-danger">
                   <p class="card-text" id="currentTemp">Integer</p>
+                  F
                 </div>
               </div>
 
@@ -130,6 +131,7 @@
                 </div>
                 <div class="card-body text-primary">
                   <p class="card-text" id="relativeHumidity">Integer</p>
+                  %
                 </div>
               </div>
 
@@ -139,15 +141,17 @@
                 </div>
                 <div class="card-body text-info">
                   <p class="card-text" id="windSpeed">Integer</p>
+                  MPH
                 </div>
               </div>
 
               <div class="card border-light mb-3">
                 <div class="card-header bg-transparent border-light">
-                  Wind Direction
+                  Heat Index
                 </div>
                 <div class="card-body text-secondary">
-                  <p class="card-text" id="windDirection">String</p>
+                  <p class="card-text" id="heatIndex">String</p>
+                  F
                 </div>
               </div>
             </div>
@@ -166,7 +170,7 @@
                 </div>
                 <div class="card-body">
                   <p id="todayHigh" class="card-text text-danger">Forecast</p>
-                  <p id="todayLow" class="card-text text-primary">Forecast</p>
+                  <!-- <p id="todayLow" class="card-text text-primary">Forecast</p> -->
                 </div>
               </div>
               <div class="card border-light mb-3">
@@ -243,8 +247,15 @@
       <div class="row">
         <div class="card border-dark mb-3">
           <div class="card-body">
-            <h5 class="card-title">Weather Alerts</h5>
-            <div id="alerts" class="card-text"></div>
+            <button class="btn btn-outline-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+              aria-expanded="false" aria-controls="collapseExample">
+              Weather Warnings
+            </button>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                <div id="alerts" class="card-text"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

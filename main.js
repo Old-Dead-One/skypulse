@@ -2,23 +2,22 @@
 
 document.addEventListener("DOMContentLoaded", async function () {
   const response = await fetch(
-    "https://api.weather.gov/gridpoints/SLC/20,19/forecast/hourly"
+    "https://api.weather.gov/stations/ksgu/observations"
   );
   const data = await response.json();
-  const currentWeather = data.properties.periods[0];
+  const currentWeather = data.features[0].properties;
 
-  const shortForecast = currentWeather.shortForecast;
-  const currentTemp = currentWeather.temperature;
-  const relativeHumidity = currentWeather.relativeHumidity.value;
-  const windSpeed = currentWeather.windSpeed;
-  const windDirection = currentWeather.windDirection;
-  console.log(shortForecast);
+  const shortForecast = currentWeather.textDescription;
+  const currentTemp = Math.round(currentWeather.temperature.value * 9/5 + 32);
+  const relativeHumidity = Math.round(currentWeather.relativeHumidity.value);
+  const windSpeed = Math.round(currentWeather.windSpeed.value);
+  const heatIndex = Math.round(currentWeather.heatIndex.value * 9/5 + 32);
 
   document.getElementById("shortForecast").innerHTML = shortForecast;
   document.getElementById("currentTemp").innerHTML = currentTemp;
   document.getElementById("relativeHumidity").innerHTML = relativeHumidity;
   document.getElementById("windSpeed").innerHTML = windSpeed;
-  document.getElementById("windDirection").innerHTML = windDirection;
+  document.getElementById("heatIndex").innerHTML = heatIndex;
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -30,29 +29,29 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   const todayName = weather7Day[0].name;
   const todayHigh = weather7Day[0].temperature;
-  const todayLow = weather7Day[1].temperature;
-  const day2Name = weather7Day[2].name;
-  const day2High = weather7Day[2].temperature;
-  const day2Low = weather7Day[3].temperature;
-  const day3Name = weather7Day[4].name;
-  const day3High = weather7Day[4].temperature;
-  const day3Low = weather7Day[5].temperature;
-  const day4Name = weather7Day[6].name;
-  const day4High = weather7Day[6].temperature;
-  const day4Low = weather7Day[7].temperature;
-  const day5Name = weather7Day[8].name;
-  const day5High = weather7Day[8].temperature;
-  const day5Low = weather7Day[9].temperature;
-  const day6Name = weather7Day[10].name;
-  const day6High = weather7Day[10].temperature;
-  const day6Low = weather7Day[11].temperature;
-  const day7Name = weather7Day[12].name;
-  const day7High = weather7Day[12].temperature;
-  const day7Low = weather7Day[13].temperature;
+  // const todayLow = weather7Day[1].temperature;
+  const day2Name = weather7Day[1].name;
+  const day2High = weather7Day[1].temperature;
+  const day2Low = weather7Day[2].temperature;
+  const day3Name = weather7Day[3].name;
+  const day3High = weather7Day[3].temperature;
+  const day3Low = weather7Day[4].temperature;
+  const day4Name = weather7Day[5].name;
+  const day4High = weather7Day[5].temperature;
+  const day4Low = weather7Day[6].temperature;
+  const day5Name = weather7Day[7].name;
+  const day5High = weather7Day[7].temperature;
+  const day5Low = weather7Day[8].temperature;
+  const day6Name = weather7Day[9].name;
+  const day6High = weather7Day[9].temperature;
+  const day6Low = weather7Day[10].temperature;
+  const day7Name = weather7Day[11].name;
+  const day7High = weather7Day[11].temperature;
+  const day7Low = weather7Day[12].temperature;
 
   document.getElementById("todayName").innerHTML = todayName;
   document.getElementById("todayHigh").innerHTML = todayHigh;
-  document.getElementById("todayLow").innerHTML = todayLow;
+  // document.getElementById("todayLow").innerHTML = todayLow;
   document.getElementById("day2Name").innerHTML = day2Name;
   document.getElementById("day2High").innerHTML = day2High;
   document.getElementById("day2Low").innerHTML = day2Low;
@@ -79,6 +78,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const response = await fetch(baseUrl);
   const data = await response.json();
   const currentAlerts = data.features;
+  console.log (currentAlerts)
 
   const contentElement = document.getElementById("alerts");
 
@@ -94,7 +94,8 @@ function createAlertElement(alerts) {
 
   div.innerHTML = `
     <p class="text-secondary">${alerts.areaDesc}</p>
-    <p class="text-warning">${alerts.headline}</p>`;
+    <p class="text-warning">${alerts.event}</p>
+    <p class="text-warning">${alerts.instruction}</p>`;
 
   return div;
 };
