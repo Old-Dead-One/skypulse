@@ -8,10 +8,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   const currentWeather = data.features[0].properties;
 
   const shortForecast = currentWeather.textDescription;
-  const currentTemp = Math.round(currentWeather.temperature.value * 9/5 + 32);
+  const currentTemp = Math.round(
+    (currentWeather.temperature.value * 9) / 5 + 32
+  );
   const relativeHumidity = Math.round(currentWeather.relativeHumidity.value);
   const windSpeed = Math.round(currentWeather.windSpeed.value);
-  const heatIndex = Math.round(currentWeather.heatIndex.value * 9/5 + 32);
+  const heatIndex = Math.round((currentWeather.heatIndex.value * 9) / 5 + 32);
 
   document.getElementById("shortForecast").innerHTML = shortForecast;
   document.getElementById("currentTemp").innerHTML = currentTemp;
@@ -78,7 +80,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   const response = await fetch(baseUrl);
   const data = await response.json();
   const currentAlerts = data.features;
-  console.log (currentAlerts)
 
   const contentElement = document.getElementById("alerts");
 
