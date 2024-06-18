@@ -23,13 +23,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const response = await fetch("https://api.weather.gov/gridpoints/SLC/20,19/forecast");
+  const response = await fetch(
+    "https://api.weather.gov/gridpoints/SLC/20,19/forecast"
+  );
   const data = await response.json();
   const weather7Day = data.properties.periods;
 
   for (let i = 0; i < 7; i++) {
-    const dayIndex = i * 2
-    const nextDayIndex = dayIndex +1;
+    const dayIndex = i * 2;
+    const nextDayIndex = dayIndex + 1;
 
     const dayName = weather7Day[dayIndex].name;
     const dayHigh = weather7Day[dayIndex].temperature;
@@ -105,9 +107,60 @@ function createAlertElement(alerts) {
   div.className = "alerts";
 
   div.innerHTML = `
-    <p class="alertAreaDesc">${alerts.areaDesc}</p>
-    <p class="alertEvent">${alerts.event}</p>
-    <p class="alertInstructions">${alerts.instruction}</p>`;
+    <p class="alertAreaDesc style= text-info">${alerts.areaDesc}</p>
+    <p class="alertEvent style= text-warning">${alerts.event}</p>
+    <p class="alertInstructions style= text-secondary">${alerts.instruction}</p>`;
 
   return div;
-};
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+  const response = await fetch("https://api.weather.gov/gridpoints/SLC/20,19/forecast");
+  const data = await response.json();
+  const weather7Day = data.properties.periods;
+
+  let labels = [];
+  let dailyHighs = [];
+  let dailyLows = [];
+
+  for (let i = 0; i < weather7Day.length / 2; i++) {
+    const dayIndex = i * 2;
+    const nextDayIndex = dayIndex + 1;
+
+    if (weather7Day[dayIndex] && weather7Day[nextDayIndex]) {
+      labels.push(weather7Day[dayIndex].name);
+      dailyHighs.push(weather7Day[dayIndex].temperature);
+      dailyLows.push(weather7Day[nextDayIndex].temperature);
+    }
+  }
+
+  const ctx = document.getElementById("weatherTrend").getContext("2d");
+
+  const weatherChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "High Temperatures",
+          data: dailyHighs,
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+        },
+        {
+          label: "Low Temperatures",
+          data: dailyLows,
+          borderColor: "rgb(54, 162, 235)",
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+});
