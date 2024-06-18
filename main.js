@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   let dailyHighs = [];
   let dailyLows = [];
 
-  for (let i = 0; i < weather7Day.length / 2; i++) {
+  for (let i = 0; i < weather7Day.length; i++) {
     const dayIndex = i * 2;
     const nextDayIndex = dayIndex + 1;
 
