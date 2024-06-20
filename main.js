@@ -2,19 +2,19 @@
 
 document.addEventListener("DOMContentLoaded", async function () {
   const currentWeatherResponse = await fetch(
-    "https://api.weather.gov/stations/ksgu/observations"
+    "https://api.weather.gov/stations/ksgu/observations/latest"
   );
   const currentWeatherData = await currentWeatherResponse.json();
-  const currentWeather = currentWeatherData.features[0].properties;
+  const currentWeather = currentWeatherData.properties;
 
-  const shortForecast = currentWeather.textDescription;
+  const shortForecast = currentWeather.textDescription || "N/A";
   const currentTemp = Math.round(
     (currentWeather.temperature.value * 9) / 5 + 32
   );
 
-  const relativeHumidity = Math.round(currentWeather.relativeHumidity.value);
-  const windSpeed = Math.round(currentWeather.windSpeed.value);
-  const heatIndex = Math.round((currentWeather.heatIndex.value * 9) / 5 + 32);
+  const relativeHumidity = Math.round(currentWeather.relativeHumidity.value) || "N/A";
+  const windSpeed = Math.round(currentWeather.windSpeed.value) || "N/A";
+  const heatIndex = Math.round((currentWeather.heatIndex.value * 9) / 5 + 32) || "N/A";
 
   document.getElementById("shortForecast").innerHTML = shortForecast;
   document.getElementById("currentTemp").innerHTML = currentTemp;
@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("windSpeed").innerHTML = windSpeed;
   document.getElementById("heatIndex").innerHTML = heatIndex;
 
+  // ALERTS
   const baseUrl = "https://api.weather.gov/alerts/active?area=UT";
 
   const alertResponse = await fetch(baseUrl);
@@ -38,13 +39,27 @@ document.addEventListener("DOMContentLoaded", async function () {
     contentElement.appendChild(alertElement);
   }
 
+  function createAlertElement(alerts) {
+    const div = document.createElement("div");
+    div.className = "alerts";
+
+    div.innerHTML = `
+    <p class="alertTitle style= text-primary"<${alerts.title}</p>
+    <p class="alertAreaDesc style= text-info">${alerts.areaDesc}</p>
+    <p class="alertEvent style= text-warning">${alerts.event}</p>
+    <p class="alertInstructions style= text-secondary">${alerts.instruction}</p>`;
+
+    return div;
+  }
+
+// 7 DAY FORECAST
   const weather7DayResponse = await fetch(
     "https://api.weather.gov/gridpoints/SLC/20,19/forecast"
   );
   const weather7dayData = await weather7DayResponse.json();
   const weather7Day = weather7dayData.properties.periods;
 
-  let labels = [];
+  let days = [];
   let dailyHighs = [];
   let dailyLows = [];
 
@@ -53,18 +68,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     const nextDayIndex = dayIndex + 1;
 
     if (weather7Day[dayIndex] && weather7Day[nextDayIndex]) {
-      labels.push(weather7Day[dayIndex].name);
+      days.push(weather7Day[dayIndex].name);
       dailyHighs.push(weather7Day[dayIndex].temperature);
       dailyLows.push(weather7Day[nextDayIndex].temperature);
     }
   }
 
-  const ctx = document.getElementById("weatherTrend").getContext("2d");
+  const ctx7Day = document.getElementById("weather7DayTrend").getContext("2d");
 
-  const weatherChart = new Chart(ctx, {
+  const weather7DayChart = new Chart(ctx7Day, {
     type: "bar",
     data: {
-      labels: labels,
+      labels: days,
       datasets: [
         {
           label: "High Temperatures",
@@ -88,17 +103,50 @@ document.addEventListener("DOMContentLoaded", async function () {
       },
     },
   });
+
+// 24 HOUR FORECAST
+  const weather24HourResponse = await fetch(
+    "https://api.weather.gov/gridpoints/SLC/20,19/forecast/hourly"
+  );
+  const weather24HourData = await weather24HourResponse.json();
+  const weather24Hour = weather24HourData.properties.periods;
+
+  let dateTime = [];
+  let hourlyTemp = [];
+
+  for (let i = 1; i < 24; i++) {
+    const hourIndex = i;
+
+    if (weather24Hour[hourIndex]) {
+      dateTime.push(weather24Hour[hourIndex].startTime.substring(11, 16));
+      hourlyTemp.push(weather24Hour[hourIndex].temperature);
+    };
+
+  };
+
+  const ctx24Hour = document
+    .getElementById("weather24HourTrend").getContext("2d");
+
+  const weather24HourChart = new Chart(ctx24Hour, {
+    type: "line",
+    data: {
+      labels: dateTime,
+      datasets: [
+        {
+          label: "Temperature",
+          data: hourlyTemp,
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+
 });
-
-function createAlertElement(alerts) {
-  const div = document.createElement("div");
-  div.className = "alerts";
-
-  div.innerHTML = `
-    <p class="alertTitle style= text-primary"<${alerts.title}</p>
-    <p class="alertAreaDesc style= text-info">${alerts.areaDesc}</p>
-    <p class="alertEvent style= text-warning">${alerts.event}</p>
-    <p class="alertInstructions style= text-secondary">${alerts.instruction}</p>`;
-
-  return div;
-}
