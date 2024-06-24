@@ -1,5 +1,5 @@
 "use strict";
-
+// Current Weather
 document.addEventListener("DOMContentLoaded", async function () {
   const currentWeatherResponse = await fetch(
     "https://api.weather.gov/stations/ksgu/observations/latest"
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const ctx7Day = document.getElementById("weather7DayTrend").getContext("2d");
 
   const weather7DayChart = new Chart(ctx7Day, {
-    type: "bar",
+    type: "line",
     data: {
       labels: days,
       datasets: [
@@ -97,9 +97,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     },
     options: {
       scales: {
-        y: {
-          beginAtZero: true,
-        },
       },
     },
   });
@@ -117,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   for (let i = 1; i < 24; i++) {
     const hourIndex = i;
 
-    if (weather24Hour[hourIndex]) {
+    if (weather24Hour[hourIndex]){
       dateTime.push(weather24Hour[hourIndex].startTime.substring(11, 16));
       hourlyTemp.push(weather24Hour[hourIndex].temperature);
     };
@@ -127,13 +124,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   const ctx24Hour = document
     .getElementById("weather24HourTrend").getContext("2d");
 
-  const weather24HourChart = new Chart(ctx24Hour, {
-    type: "line",
+  let weather24HourChart = new Chart(ctx24Hour, {
+    type: "polarArea",
     data: {
       labels: dateTime,
       datasets: [
         {
-          label: "Temperature",
+          label: "Hourly Temperature",
           data: hourlyTemp,
           borderColor: "rgb(255, 99, 132)",
           backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -142,9 +139,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     },
     options: {
       scales: {
-        y: {
-          beginAtZero: true,
-        },
       },
     },
   });
